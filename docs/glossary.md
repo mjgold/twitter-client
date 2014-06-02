@@ -144,13 +144,14 @@ Not all RFC's are computer focused, [RFC
 #### W
 
 ##### Web
-The Web is used to reference interconnected [web pages](#web-pages) served up over
-[HTTP](#http). This is not to be confused with the [Internet](#internet)
+The Web is used to reference interconnected web sites served up over
+[HTTP](#http-hypertext-transfer-protocol). Easily confused with the
+[Internet](#internet)
 
 ##### Web Service (or Web API)
 A web service (or web [API](#api) is a program hosted on [the web](#web) designed to
-be used by other programs instead of humans. For instance, you could write a
-lunch decider app that interacts with the [Yelp
+be used by other programs. Using Yelps API you could write a
+lunch decider app that interacts with their [search
 API](http://www.yelp.com/developers/documentation/v2/search_api) and selects a
 single location based upon whatever criteria you like.
 
