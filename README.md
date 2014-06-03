@@ -6,31 +6,33 @@ process, you'll learn:
 
 1. The difference between data and information
 1. How data is transmitted on the web
-1. How to use a web api that requires a application authentication
-1. How to use a web api that requires a user authentication
+1. How to use a web api that requires a application context for authentication
+1. How to use a web api that requires a user context authentication
 
 ## Your Mission
 
 Your mission is to build a command line ruby program that allows a user to
 perform the following tasks:
 
-1. See any twitter users timeline
-1. See any twitter users information (Join date, location, etc.)
-1. See any twitter users followers
-1. See who is following any twitter user
-1. Send a tweet
-1. Send a DM
-1. Follow a user
-1. Unfollow a user
+1. See any users timeline -- `./twitter timeline zspencer`
+1. See any users information (Join date, location, etc.) -- `./twitter info jfarmer`
+1. See any users followers -- `./twitter followers <yourhandle>`
+1. See who is following any user -- `./twitter following <yourhandle>`
+1. Send a tweet -- `./twitter tweet I know kung fu`
+1. Send a DM -- `./twitter message zspencer do you know kung fu?`
+1. Follow a user -- `./twitter follow jfarmer`
+1. Unfollow a user -- `./twitter unfollow zspencer`
 
 
 ## Getting Started
-1. Fork this repository
-1. Clone it to your machine
-1. CD into the directory
-1. Run `bundle install`
-1. Register your Application at Twitter
-1. Put your credentials in `lib/twitter_creds.rb`
+We've provided a very tiny skeleton of a command line application
+1. Fork this repository and Clone to your machine
+1. CD into this directory
+1. Run `bundle`
+1. Create your Application in [Twitters Dev Center](http://dev.twitter.com)
+1. Place your API credentials in `lib/twitter_creds.rb`
+1. run `./twitter`
+
 
 ## Helpful Resources
 
@@ -38,3 +40,12 @@ perform the following tasks:
 1. [Working with Twitter](docs/twitter.md)
 1. [Glossary of Terms](docs/glossary.md)
 
+## Bored?
+
+Did you rush through this without breaking a sweat? Here's some additional
+challenges:
+
+* Publish this as a gem! - Perhaps load the users credentials from a file in
+  their home directory
+* Make a Text Messaging app off the [Twilio API](http://www.twilio.com/)
+* ???
