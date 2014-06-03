@@ -34,8 +34,7 @@ perform the following tasks:
 
 ## Helpful Resources
 
-1. [Glossary of Terms](docs/glossary.md)
 1. [How The Internet Works](docs/internet.md)
 1. [Working with Twitter](docs/twitter.md)
-
+1. [Glossary of Terms](docs/glossary.md)
 

@@ -36,7 +36,7 @@ use the browsers api to change pictures as you browse the web.
 
 ##### Client/Server Model
 The client/server model is a common approach to sharing [data](#data) between many
-programs. This week, twitter's [web service](#web-service) will act as the
+programs. This week, twitter's [web service](#web-service-or-web-api) will act as the
 server; and the program you build will be the client.
 
 The server is responsible for storing data and ensuring the client only
@@ -109,7 +109,7 @@ There are four main "verbs" used in [web services](#web-services-or-web-apis):
 * DELETE - Removes data from the service
 
 Every [HTTP Request](#request) uses one of these verbs in conjunction with
-a [URL](#url-universal-resource-locator) to change [data](#data) in the web
+a [URL](#url-uniform-resource-locator) to change [data](#data) in the web
 service.
 
 #### I
@@ -161,7 +161,7 @@ OAuth is a [protocol](#protocol) built on top of
 applications](#client-server-model) to access a users data without needing to
 store their password. You will use the [authorization
 header](http://oauth.net/core/1.0/#auth_header) to provide the twitter
-[web-service](#web-service) with the appropriate [user context](#authorization).
+[web-service](#web-service-or-web-api) with the appropriate [user context](#authorization).
 
 #### P
 
@@ -177,7 +177,7 @@ at the moment.
 #### R
 
 ##### Response
-HTTP Responses are returned from the [web service](#web-service) to the
+HTTP Responses are returned from the [web service](#web-service-or-web-api) to the
 [client](#client-server-model) who sent the [request](#request). Responses are
 composed of a [status code](#status-codes), some [headers](#http-headers), and a
 body that contains [data](#data).
@@ -185,11 +185,11 @@ body that contains [data](#data).
 ##### Request
 HTTP requests are one half of the [Request/Response Cycle](#request-response-cycle).
 Requests are composed of a [method](#http-methods), a
-[URL](#url-universal-resource-locator), [headers](#http-headers), and sometimes
+[URL](#url-uniform-resource-locator), [headers](#http-headers), and sometimes
 a body.
 
 ##### Request/Response Cycle
-HTTP works by connecting the client and [web service](#web-service) for a single
+HTTP works by connecting the client and [web service](#web-service-or-web-api) for a single
 transaction.
 
 The [client](#client-server-model) sends a [request](#request) to the server for
@@ -240,7 +240,12 @@ The most common status codes are:
 A more comprehensive list [may be found on
 wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
 
+#### U
 
+##### URL (Uniform Resource Locator)
+The Uniform Resource Locator, often called the web address, is a mainstay of the
+[Internet](#internet). It's used to identify where a resource lives on the
+Internet in a human-and-robot readable fashion.
 
 #### W
 
@@ -257,5 +262,5 @@ API](http://www.yelp.com/developers/documentation/v2/search_api) and selects a
 single location based upon whatever criteria you like.
 
 To use a web service, your program sends [requests](#request) to a
-[url](#url-universal-resource-locator) and gets [data](#data) back, often
+[url](#url-uniform-resource-locator) and gets [data](#data) back, often
 [encoded](#encoding-and-decoding) in [JSON](#json-javascript-object-notation).
