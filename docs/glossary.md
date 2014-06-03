@@ -1,7 +1,23 @@
 ## Glossary of Terms
-This is a series of short, precise, and accurate unofficial definitions intended
-to create a limited understanding. Memorizing strongly discouraged. Referencing
-strongly encouraged.
+This is a comprehensive series of short, precise, and accurate unofficial
+definitions of terms you'll experience this week. It can only create a surface
+level understanding.
+
+Memorizing strongly discouraged. Referencing strongly encouraged.
+
+#### Authorization Contexts
+The Twitter API allows your application to work in two contexts: the application
+context and the user context.
+
+* The Application context identifies each request as your application to twitter
+  using a Consumer Key (Sometimes called an API Key) and a Consumer Secret
+  (sometimes called an API Secret).
+* The User context requires all the data the Application context requires, plus
+  an Access Token (sometimes called a user token) and an Access Token Secret
+  (sometimes called a user secret)
+
+These 4 pieces of [data](#data) are used to create the [Authorization
+header](#http-headers) that is part of an [OAuth](#oauth) [request](#request).
 
 #### API (Application Programmable Interface)
 An API is a way to expose parts of a program so other programs may use it.
@@ -15,6 +31,17 @@ Girl](https://chrome.google.com/webstore/detail/hey-girl/jcpmmhaffdebnmkjelaohgj
 and [Mustachio
 Redux](https://chrome.google.com/webstore/detail/mustachio-redux/hbnnipmnpgiepegnlmekieblhjmchmbf)
 use the browsers api to change pictures as you browse the web.
+
+#### C
+
+##### Client/Server Model
+The client/server model is a common approach to sharing [data](#data) between many
+programs. This week, twitter's [web service](#web-service) will act as the
+server; and the program you build will be the client.
+
+The server is responsible for storing data and ensuring the client only
+interacts with the data i,'s allowed to, and the client is responsible for
+handling the user interactions.
 
 #### D
 
@@ -52,25 +79,38 @@ allows you to put data into a [format](#data-formats) that other programs can re
 ##### Encryption
 Encryption is a form of [encoding](#encoding-and-decoding) [data](#data) so it
 is only readable by parties who are allowed to read it. It's often used for
-[HTTP requests](#http-request) that carry credit card or password data.
+[HTTP requests](#request) that carry credit card or password data.
 
 #### H
 
 ##### HTTP (HyperText Transfer Protocol)
 A [protocol](#protocol) used to transmit data on [the Web](#web). It is
-[client-server](#client-server) based and built on top of the [Internet
+[client-server](#client-server-model) based and built on top of the [Internet
 Protocol](#ip-internet-protocol). HTTPS is an alternative protocol used to transfer
 data securely using [encryption](#encryption).
 
-Reference [How HTTP Works](internet.md#how-http-works) for a more detailed
+Reference [How HTTP Works](internet.md) for a more detailed
 illustration.
 
-##### HTTP Request
-HTTP requests are part of the [Request/Response Cycle](#request-response-cycle).
-Requests are composed of a [method](#http-method), a
-[URL](#url-universal-resource-locator), [headers](#http-headers), and sometimes
-a [body](#http-body). They are sent to a [server](#server), which processes the
-request and creates a [response](#http-response)
+##### Headers
+Every HTTP [Request](#request) and [Response](#response) has
+[metadata](#metadata) attached to it. This week, only a few [
+headers](https://en.wikipedia.org/wiki/List_of_HTTP_headers#Request_Headers) are
+likely to be important:
+* [Authorization](#authorization) - Identifies the sender of the request to the web serice
+* Content-Type - States the [data format](#data-format) of the request or
+  response body.
+
+##### HTTP Methods
+There are four main "verbs" used in [web services](#web-services-or-web-apis):
+* GET - Retrieves data from the service
+* POST - Adds data to the service
+* PUT - Replaces data in the service
+* DELETE - Removes data from the service
+
+Every [HTTP Request](#request) uses one of these verbs in conjunction with
+a [URL](#url-universal-resource-locator) to change [data](#data) in the web
+service.
 
 #### I
 
@@ -112,6 +152,17 @@ now in JSON
 }
 ```
 
+#### O
+
+##### OAuth
+
+OAuth is a [protocol](#protocol) built on top of
+[http](#http-hypertext-transfer-protocol) to allow [client
+applications](#client-server-model) to access a users data without needing to
+store their password. You will use the [authorization
+header](http://oauth.net/core/1.0/#auth_header) to provide the twitter
+[web-service](#web-service) with the appropriate [user context](#authorization).
+
 #### P
 
 ##### Protocol
@@ -124,6 +175,29 @@ for chat, and many many more. Don't worry about learning the protocols details
 at the moment.
 
 #### R
+
+##### Response
+HTTP Responses are returned from the [web service](#web-service) to the
+[client](#client-server-model) who sent the [request](#request). Responses are
+composed of a [status code](#status-codes), some [headers](#http-headers), and a
+body that contains [data](#data).
+
+##### Request
+HTTP requests are one half of the [Request/Response Cycle](#request-response-cycle).
+Requests are composed of a [method](#http-methods), a
+[URL](#url-universal-resource-locator), [headers](#http-headers), and sometimes
+a body.
+
+##### Request/Response Cycle
+HTTP works by connecting the client and [web service](#web-service) for a single
+transaction.
+
+The [client](#client-server-model) sends a [request](#request) to the server for
+processing. Once the server finishes it creates a [response](#response) and
+sends it back to the client.
+
+For more information, read [How HTTP Works](internet.md)
+
 
 ##### RFC (Request For Comment)
 RFCs are public documents outlining a standard in the technology industry. While
@@ -141,6 +215,33 @@ Not all RFC's are computer focused, [RFC
 2119](https://www.ietf.org/rfc/rfc2119.txt) is an RFC for people who write RFCs!
 
 
+#### S
+
+##### Status Codes
+
+Status codes are part of the [response](#response) that carries quite a bit of
+information. Status codes start with the numbers 1 to 5, and each have specific
+meaning:
+* 1XX - Informational
+* 2XX - Success
+* 3XX - Redirection
+* 4XX - Client Error
+* 5XX - Server Error
+
+The most common status codes are:
+
+* [200 OK](https://httpcats.herokuapp.com/200) - Everything went great
+* [404 Not Found](https://httpcats.herokuapp.com/404) - The
+  [URL](#uniform-resource-locator) you requested doesn't exist
+* [401 Unauthorized](https://httpcats.herokuapp.com/401) - The
+  [Authorization](#authorization) [header](#http-headers) you included doesn't
+  permit you to access the [url](#uniform-resource-locator) you requested
+
+A more comprehensive list [may be found on
+wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
+
+
+
 #### W
 
 ##### Web
@@ -155,6 +256,6 @@ lunch decider app that interacts with their [search
 API](http://www.yelp.com/developers/documentation/v2/search_api) and selects a
 single location based upon whatever criteria you like.
 
-To use a web service, your program sends [requests](#http-request) to a
+To use a web service, your program sends [requests](#request) to a
 [url](#url-universal-resource-locator) and gets [data](#data) back, often
 [encoded](#encoding-and-decoding) in [JSON](#json-javascript-object-notation).

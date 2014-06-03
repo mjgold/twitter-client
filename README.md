@@ -35,12 +35,7 @@ perform the following tasks:
 ## Helpful Resources
 
 1. [Glossary of Terms](docs/glossary.md)
-1. [How The Web Works](docs/internet.md#how-the-web-works)
-1. [How HTTP Works](docs/internet.md#how-http-works)
-1. [The Difference Between Data and Information](docs/data.md#data-vs-information)
-1. [GETting Data from the Internet](docs/internet.md#GET-with-ruby)
-1. [POSTting Data to the Internet](docs/internet.md#POST-with-ruby)
-1. [Registering an application with Twitter](docs/twitter.md#creating-an-application)
-1. [Decoding JSON Data](docs/internet.md#decoding-json-data)
+1. [How The Internet Works](docs/internet.md)
+1. [Working with Twitter](docs/twitter.md)
 
 
