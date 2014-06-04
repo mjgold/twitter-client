@@ -84,4 +84,7 @@ are building do the same thing as your browser. Your app will send [GET and
 POST](glossary.md#http-methods) requests to twitters' [web
 service](glossary.md#web-service). Twitter will respond to each request with a
 [JSON](glossary.md#json-javascript-object-notation)
-[encoded](glossary.md#encoding-and-decoding)
+[encoded](glossary.md#encoding-and-decoding).
+
+
+[Twitter in More Detail](twitter.md)
