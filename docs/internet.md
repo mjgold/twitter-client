@@ -46,13 +46,14 @@ like under the covers! Try it out! We'll wait for you!
 
 ### Understanding URLs
 
-Before we can go further, we should understand the different parts of a URL.
+Before we can go further, we should understand the different parts of a
+[URL](glossary.md#url-uniform-resource-locator).
 Take for example: `http://www.yelp.com/search?find_desc=tacos&find_loc=Downtown+Oakland%2C+Oakland%2C+CA`
 
 This url has 4 parts:
 
 * The `scheme` - states which [protocol](#protocol) this URL uses. It is the
-  first part of the URP and extends up until the `://`
+  first part of the URL and extends up until the `://`
 * The `domain` - identifies the website you are on.
 * The `path` - tells which file on the website you're looking for. It runs up to
   (but doesn't include!) the `?`
