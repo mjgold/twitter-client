@@ -26,9 +26,10 @@ perform the following tasks:
 
 ## Getting Started
 We've provided a very tiny skeleton of a command line application
+
 1. Fork this repository and Clone to your machine
 1. CD into this directory
-1. Run `bundle`
+1. Run `bundle install`
 1. Create your Application in [Twitters Dev Center](http://dev.twitter.com)
 1. Place your API credentials in `lib/twitter_creds.rb`
 1. run `./twitter`
