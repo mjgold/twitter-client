@@ -49,6 +49,7 @@ This page tells us everything about how to get a twitter users timeline from the
 * Example Request - An example of both the URL to use to make the request, and the data returned by it.
 
 Now, let's grab that data!
+
 1. Go back to [apps.twitter.com](https://apps.twitter.com)
 1. Select your application
 1. Click on the `Test Oauth` button.
@@ -80,7 +81,8 @@ Since JSON is somewhat hard to read, let's use Ruby to parse this down!
 First, make sure you've put your api key and api secret in
 `lib/twitter_creds.rb`.
 
-Good? Great! Open up IRB and paste the following into it!
+Good? Great! Now, create a file called `scratch.rb` in this projects root
+directory, paste the contents into it, and run it!
 
 ```
 require 'json'
