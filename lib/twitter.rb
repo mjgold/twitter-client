@@ -4,7 +4,7 @@
 # was passed in.
 #
 # It's up to you to decide what this function returns; But I'd recommend an
-# array of strings to display to the user.
+# array of strings to present to the user.
 #
 # Examples:
 #   run_app("timeline", ["zspencer"])
@@ -12,5 +12,4 @@
 #   run_app("message", ["jfarmer", "Huh", "the", "more", "you", "know..."])
 #
 def run_app(command, arguments)
-  []
 end

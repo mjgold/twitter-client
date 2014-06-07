@@ -22,6 +22,5 @@ arguments = ARGV
 
 results = run_app(command, arguments)
 
-results.each do |row|
-  puts row
-end
+
+# It's up to you to present the results of each command.
