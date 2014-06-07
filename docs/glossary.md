@@ -5,6 +5,20 @@ level understanding.
 
 Memorizing strongly discouraged. Referencing strongly encouraged.
 
+#### Authentication
+Authentication is how an application identifies you. At the user level, this is
+often by using a  username/password combination. At the application level, this
+is often using an API Key and a shared secret.
+
+Not to be confused with [Authorization](#authorization).
+
+#### Authorization
+Authorization is how an application decides what someone is allowed to do. For
+instance; you may be allowed to deposit money into any bank account; but you can
+only withdraw money from your own. Authorization is usually dependent on valid
+[Authentication](#authentication).
+
+
 #### Authorization Contexts
 The Twitter API allows your application to work in two contexts: the application
 context and the user context.
@@ -162,6 +176,8 @@ applications](#client-server-model) to access a users data without needing to
 store their password. You will use the [authorization
 header](http://oauth.net/core/1.0/#auth_header) to provide the twitter
 [web-service](#web-service-or-web-api) with the appropriate [user context](#authorization).
+
+For more details; check out our [OAuth guide](docs/oauth.md)
 
 #### P
 
