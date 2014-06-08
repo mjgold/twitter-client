@@ -5,6 +5,19 @@ level understanding.
 
 Memorizing strongly discouraged. Referencing strongly encouraged.
 
+##### Access Token
+An Access Token, sometimes called a "User Token", is created when a user logs
+into an application using [OAuth](#OAuth). It is unique on a
+per-user-per-application basis. An Access Token can be shared publicly without
+risk. Think of them as the "username" for OAuth's
+[Authentication](#authentication).
+
+##### Access Token Secret
+An Access Token Secret, sometimes called a "User Secret", is created when a user
+logs into an application using [OAuth](#OAuth). Access Token Secrets are unique
+on a per-user-per-application basis. You should never share a users Access Token
+Secret, as they are the "password" of OAuth's [Authentication](#authentication).
+
 #### Authentication
 Authentication is how an application identifies you. At the user level, this is
 often by using a  username/password combination. At the application level, this
@@ -19,16 +32,14 @@ only withdraw money from your own. Authorization is usually dependent on valid
 [Authentication](#authentication).
 
 
-#### Authorization Contexts
+#### Authorization Contextsq
 The Twitter API allows your application to work in two contexts: the application
 context and the user context.
 
-* The Application context identifies each request as your application to twitter
-  using a Consumer Key (Sometimes called an API Key) and a Consumer Secret
-  (sometimes called an API Secret).
-* The User context requires all the data the Application context requires, plus
-  an Access Token (sometimes called a user token) and an Access Token Secret
-  (sometimes called a user secret)
+* The Application context identifies which application is making each request
+  using a [Consumer Key](#consumer-key) and a [Consumer Secret](#consumer-secret)
+* The User context identifies which user is making each request using an [Access
+  Token](#access-token) and [Access Token Secret](#access-token-secret)
 
 These 4 pieces of [data](#data) are used to create the [Authorization
 header](#http-headers) that is part of an [OAuth](#oauth) [request](#request).
@@ -54,8 +65,24 @@ programs. This week, twitter's [web service](#web-service-or-web-api) will act a
 server; and the program you build will be the client.
 
 The server is responsible for storing data and ensuring the client only
-interacts with the data i,'s allowed to, and the client is responsible for
+interacts with the data it's allowed to, and the client is responsible for
 handling the user interactions.
+
+##### Consumer Key
+A Consumer Key, sometimes called an API Key, is used to
+identify your application when sending
+[requests](#requests) to a [web service](#web-service-or-web-api) that uses
+[OAuth](#oauth). Consumer keys are generated when you register your application
+with the web api. Consumer Keys may be shared publicly; as they are analogous to
+a username when using OAuth for [authentication](#authentication).
+
+##### Consumer Secret
+A Consumer secret, sometimes called an API Secret, is used to
+identify your application when sending
+[requests](#requests) to a [web service](#web-service-or-web-api) that uses
+[OAuth](#oauth). Consumer secrets are generated when you register your application
+with the web api. You should not share consumer secrets publicly; as they are analogous to
+a password when using OAuth for [authentication](#authentication).
 
 #### D
 
@@ -75,6 +102,7 @@ different [formats](#data-formats) through the process of
 [encoding](#encoding-and-decoding)
 
 ##### Data Formats
+
 Data formats are how you can represent data to either a person or program. CSV's
 are a type of data format designed to represent spreadsheets.
 [JSON](#json-javascript-object-notation) is another common data format for
