@@ -32,7 +32,7 @@ only withdraw money from your own. Authorization is usually dependent on valid
 [Authentication](#authentication).
 
 
-#### Authorization Contextsq
+#### Authorization Context
 The Twitter API allows your application to work in two contexts: the application
 context and the user context.
 
@@ -42,7 +42,7 @@ context and the user context.
   Token](#access-token) and [Access Token Secret](#access-token-secret)
 
 These 4 pieces of [data](#data) are used to create the [Authorization
-header](#http-headers) that is part of an [OAuth](#oauth) [request](#request).
+header](#headers) that is part of an [OAuth](#oauth) [request](#request).
 
 #### API (Application Programmable Interface)
 An API is a way to expose parts of a program so other programs may use it.
@@ -218,18 +218,26 @@ protocols with different purposes. SMTP, POP and IMAP are all for email;
 for chat, and many many more. Don't worry about learning the protocols details
 at the moment.
 
+#### Q
+
+#### Query Variables
+Query variables are used to pass [data](#data) to the server in an [HTTP
+Request](#request). They are part of a [URL](#url-uniform-reseource-locator)
+that comes after the `?`; and follow the format
+`name=value&other_name=other_value`.
+
 #### R
 
 ##### Response
 HTTP Responses are returned from the [web service](#web-service-or-web-api) to the
 [client](#client-server-model) who sent the [request](#request). Responses are
-composed of a [status code](#status-codes), some [headers](#http-headers), and a
+composed of a [status code](#status-codes), some [headers](#headers), and a
 body that contains [data](#data).
 
 ##### Request
 HTTP requests are one half of the [Request/Response Cycle](#request-response-cycle).
 Requests are composed of a [method](#http-methods), a
-[URL](#url-uniform-resource-locator), [headers](#http-headers), and sometimes
+[URL](#url-uniform-resource-locator), [headers](#headers), and sometimes
 a body.
 
 ##### Request/Response Cycle
@@ -278,7 +286,7 @@ The most common status codes are:
 * [404 Not Found](https://httpcats.herokuapp.com/404) - The
   [URL](#uniform-resource-locator) you requested doesn't exist
 * [401 Unauthorized](https://httpcats.herokuapp.com/401) - The
-  [Authorization](#authorization) [header](#http-headers) you included doesn't
+  [Authorization](#authorization) [header](#headers) you included doesn't
   permit you to access the [url](#uniform-resource-locator) you requested
 
 A more comprehensive list [may be found on
