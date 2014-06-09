@@ -25,6 +25,8 @@ gem 'excon'
 # Authorization header.
 gem 'simple_oauth'
 
-# dotenv allows us to put sensitive information in the .env file.
+# dotenv allows us to put sensitive information (like the twitter credentials!)
+# in a .env file and keep them out of our git repository.
+#
 # See https://github.com/codeunion/dotenv-example
 gem 'dotenv'
