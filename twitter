@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# This lets us to run this from the command line as ./twitter instead of `ruby
+# twitter`
+
+require_relative 'lib/twitter_creds'
+require_relative 'lib/twitter'
+
+
+# ARGV is where ruby stores command line arguments:
+# http://ruby.about.com/od/rubyfeatures/a/argv.htm
+#
+command = ARGV.shift
+# The first value in the ARGV array is the command the user typed (i.e. ./twitter timeline)
+#
+# `array.shift` returns the first value from an array and removes it from the
+# array: http://www.ruby-doc.org/core-2.1.2/Array.html#method-i-shift
+
+
+arguments = ARGV
+# The rest of ARGV is the arguments that we're passing to our commands.
+# Unfortunately every single word is treated as it's own argument, so when you get 
+
+results = run_app(command, arguments)
+
+
+# It's up to you to present the results of each command.
