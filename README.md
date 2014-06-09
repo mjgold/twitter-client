@@ -23,17 +23,20 @@ perform the following tasks:
 1. Follow a user -- `./twitter follow jfarmer`
 1. Unfollow a user -- `./twitter unfollow zspencer`
 
-
 ## Getting Started
+
 We've provided a very tiny skeleton of a command line application
 
 1. Fork this repository and Clone to your machine
 1. CD into this directory
 1. Run `bundle install`
 1. Create your Application in [Twitters Dev Center](http://dev.twitter.com)
-1. Place your API credentials in `lib/twitter_creds.rb`
+1. Create a `.env` file and place your Twitter credentials in it.
 1. run `./twitter`
 
+If you're confused about the `.env` file, see https://github.com/codeunion/dotenv-example.
+The dotenv gem is used to manage sensitive information like the Twitter
+credentials we'll need to make a Twitter application.
 
 ## Helpful Resources
 

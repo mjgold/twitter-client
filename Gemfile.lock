@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    dotenv (0.11.1)
+      dotenv-deployment (~> 0.0.2)
+    dotenv-deployment (0.0.2)
     excon (0.34.0)
     simple_oauth (0.2.0)
 
@@ -8,5 +11,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv
   excon
   simple_oauth

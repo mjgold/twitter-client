@@ -24,3 +24,7 @@ gem 'excon'
 # by taking our application and user credentials and turning them into an
 # Authorization header.
 gem 'simple_oauth'
+
+# dotenv allows us to put sensitive information in the .env file.
+# See https://github.com/codeunion/dotenv-example
+gem 'dotenv'

@@ -24,7 +24,11 @@ your application with twitter so you can get your api key and secret.
 5. Accept the "Rules of the Road"
 6. Click "Create Your Application"
 7. Click "API Keys"
-8. Fill in your API Key and API Secret at `lib/twitter_creds.rb`
+8. Fill in your API Key and API Secret in `.env`
+
+**Note**: We'll be using the dotenv gem to manage sensitive information like
+your Twitter API key and secret.  See [https://github.com/codeunion/dotenv-example](https://github.com/codeunion/dotenv-example)
+for a guide on how to use dotenv to manage sensitive information.
 
 At this point, your application can access twitter and read public information!
 Hooray! Now your app can keep up on
@@ -79,7 +83,12 @@ Since JSON is somewhat hard to read, let's use Ruby to parse this down!
 ### Getting Tweets in Ruby
 
 First, make sure you've put your api key and api secret in
-`lib/twitter_creds.rb`.
+`.env`.  `lib/twitter_creds` will expect you to have done this.  The `.env` file
+is used by the dotenv gem, which we're using to protect sensitive information
+like your Twitter credentials.
+
+See [https://github.com/codeunion/dotenv-example](https://github.com/codeunion/dotenv-example)
+for an example of how dotenv works.
 
 Good? Great! Now, create a file called `scratch.rb` in this projects root
 directory, paste the contents into it, and run it!
@@ -146,7 +155,7 @@ the access token for the owner of an application. So:
 1. You *may* need to refresh the page if it doesn't reflect the changes.
 1. You *may* need to verify your phone number of your twitter account if you
    haven't already. Twitter is being more picky.
-1. Plug your `access_token` and `access_token_secret` into `lib/twitter_creds`
+1. Plug your `access_token` and `access_token_secret` into `.env`
 
 OK! Let's move on!
 
