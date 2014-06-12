@@ -109,6 +109,17 @@ are a type of data format designed to represent spreadsheets.
 transferring data between programs over the [Internet](#internet). HTML is a
 data format for presenting data in a human readable way in a browser.
 
+##### Dotenv
+
+We're using the `dotenv` [gem](#gem-library) to store sensitive information like
+your Twitter [consumer secret](#consumer-secret). This lets us use the line
+`Dotenv.load ".env"` to add the key-value pairs to the global `ENV` hash. Often
+used with [.gitignore](#gitignore) to prevent storing sensitive data in your git
+repository repository.
+
+See [https://github.com/codeunion/dotenv-example](https://github.com/codeunion/dotenv-example)
+for a guide on how to use dotenv to manage sensitive information.
+
 #### E
 
 ##### Encoding and Decoding
@@ -122,6 +133,21 @@ allows you to put data into a [format](#data-formats) that other programs can re
 Encryption is a form of [encoding](#encoding-and-decoding) [data](#data) so it
 is only readable by parties who are allowed to read it. It's often used for
 [HTTP requests](#request) that carry credit card or password data.
+
+#### G
+
+##### Gem (Library)
+Gems are code that is written to be re-used within more than one ruby codebase.
+A gem you use in your project is called a `dependency`.
+
+It is a common practice to list every gem you're project uses in the projects
+`Gemfile`. This lets a new team member run `bundle install` and begin using your
+project.
+
+##### .gitignore
+The `.gitignore` file tells Git *not* to include a file in a given repository.
+It's a list of files and patterns that match files to exclude when you run `git
+add`.
 
 #### H
 

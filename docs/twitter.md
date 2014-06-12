@@ -24,11 +24,11 @@ your application with twitter so you can get your api key and secret.
 5. Accept the "Rules of the Road"
 6. Click "Create Your Application"
 7. Click "API Keys"
+8. Use `mv .env.example .env` to use [Dotenv](glossary.md#dotenv) to manage your
+   secret data and rely on [.gitignore](glossary.md#gitignore) to keep it out of
+   your github.
 8. Fill in your API Key and API Secret in `.env`
 
-**Note**: We'll be using the dotenv gem to manage sensitive information like
-your Twitter API key and secret.  See [https://github.com/codeunion/dotenv-example](https://github.com/codeunion/dotenv-example)
-for a guide on how to use dotenv to manage sensitive information.
 
 At this point, your application can access twitter and read public information!
 Hooray! Now your app can keep up on
