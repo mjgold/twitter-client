@@ -194,16 +194,16 @@ require 'excon'
 require_relative 'lib/twitter_creds'
 
 authorization_header = SimpleOAuth::Header.new("post",
-                                               "https://api.twitter.com/1.1/statuses/user_timeline.json",
-                                               { :screen_name => "<YOUR SCREEN NAME HERE>",
+                                               "https://api.twitter.com/1.1/direct_messages/new.json",
+                                               { :screen_name => "zspencer",
                                                  :text => "I can send myself DMs in Ruby!" },
                                                { :consumer_key => API_KEY,
                                                  :consumer_secret => API_SECRET,
                                                  :token => ACCESS_TOKEN,
                                                  :token_secret => ACCESS_TOKEN_SECRET })
 
-response = Excon.send("post", "https://api.twitter.com/1.1/statuses/user_timeline.json", {
-  :query => { :screen_name => "<YOUR SCREEN NAME HERE>",
+response = Excon.send("post", "https://api.twitter.com/1.1/direct_messages/new.json", {
+  :query => { :screen_name => "zspencer",
               :text => "I can send myself DMs in Ruby!" },
   :headers => { "Authorization" => authorization_header.to_s }
 })
