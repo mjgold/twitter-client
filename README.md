@@ -1,13 +1,14 @@
 # Twitter Client
 
-Welcome to the second week of your wonderful adventure of discovery! This
-week you'll write a command line program to interact with Twitter. In the
-process, you'll learn:
+For a detailed overview and instructions, [visit the the project wiki](https://github.com/codeunion/twitter-client/wiki).
 
-1. The difference between data and information
-1. How data is transmitted on the web
-1. How to use a web api that requires a application context for authentication
-1. How to use a web api that requires a user context authentication
+To get started, you'll need to:
+
+1. Fork this repository to your own GitHub account
+2. Open a Terminal and clone this repository to your local computer
+2. Navigate to the repository on your local computer
+3. Open the repository in Sublime Text
+
 
 ## Your Mission
 

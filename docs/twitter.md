@@ -24,11 +24,11 @@ your application with twitter so you can get your api key and secret.
 5. Accept the "Rules of the Road"
 6. Click "Create Your Application"
 7. Click "API Keys"
+8. Use `mv .env.example .env` to use [Dotenv](glossary.md#dotenv) to manage your
+   secret data and rely on [.gitignore](glossary.md#gitignore) to keep it out of
+   your github.
 8. Fill in your API Key and API Secret in `.env`
 
-**Note**: We'll be using the dotenv gem to manage sensitive information like
-your Twitter API key and secret.  See [https://github.com/codeunion/dotenv-example](https://github.com/codeunion/dotenv-example)
-for a guide on how to use dotenv to manage sensitive information.
 
 At this point, your application can access twitter and read public information!
 Hooray! Now your app can keep up on
@@ -82,13 +82,9 @@ Since JSON is somewhat hard to read, let's use Ruby to parse this down!
 
 ### Getting Tweets in Ruby
 
-First, make sure you've put your api key and api secret in
-`.env`.  `lib/twitter_creds` will expect you to have done this.  The `.env` file
-is used by the dotenv gem, which we're using to protect sensitive information
-like your Twitter credentials.
-
-See [https://github.com/codeunion/dotenv-example](https://github.com/codeunion/dotenv-example)
-for an example of how dotenv works.
+First, make sure you've followed *all* of the [app registration
+instructions](registering-your-application); especially moving `.env.example` to
+`.env` and placing your api key and api secret inside of it.
 
 Good? Great! Now, create a file called `scratch.rb` in this projects root
 directory, paste the contents into it, and run it!
@@ -98,6 +94,7 @@ require 'json'
 require 'simple_oauth'
 require 'excon'
 require_relative 'lib/twitter_creds'
+
 
 authorization_header = SimpleOAuth::Header.new("get",
                                                "https://api.twitter.com/1.1/statuses/user_timeline.json",
@@ -197,16 +194,16 @@ require 'excon'
 require_relative 'lib/twitter_creds'
 
 authorization_header = SimpleOAuth::Header.new("post",
-                                               "https://api.twitter.com/1.1/statuses/user_timeline.json",
-                                               { :screen_name => "<YOUR SCREEN NAME HERE>",
+                                               "https://api.twitter.com/1.1/direct_messages/new.json",
+                                               { :screen_name => "zspencer",
                                                  :text => "I can send myself DMs in Ruby!" },
                                                { :consumer_key => API_KEY,
                                                  :consumer_secret => API_SECRET,
                                                  :token => ACCESS_TOKEN,
                                                  :token_secret => ACCESS_TOKEN_SECRET })
 
-response = Excon.send("post", "https://api.twitter.com/1.1/statuses/user_timeline.json", {
-  :query => { :screen_name => "<YOUR SCREEN NAME HERE>",
+response = Excon.send("post", "https://api.twitter.com/1.1/direct_messages/new.json", {
+  :query => { :screen_name => "zspencer",
               :text => "I can send myself DMs in Ruby!" },
   :headers => { "Authorization" => authorization_header.to_s }
 })
