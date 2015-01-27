@@ -16,15 +16,15 @@ your application with twitter so you can get your api key and secret.
 ### Registering Your Application
 
 1. Go to [dev.twitter.com](https://dev.twitter.com/) and sign in with your twitter account
-2. Click your twitter avatar in the top right corner and then select "my applications"
-3. Click "Create New App"
-4. Fill in the Application details section.
+2. Go to https://apps.twitter.com/app/new to create a new app (previous instructions no longer match Twitter site)
+
+3. Fill in the Application details section.
   * P.s. Both the `Website` and `Callback URL` fields need a public website address;
     but it doesn't have to be yours. I put http://www.google.com/.
-5. Accept the "Rules of the Road"
-6. Click "Create Your Application"
-7. Click "API Keys"
-8. Use `mv .env.example .env` to use [Dotenv](glossary.md#dotenv) to manage your
+4. Accept the "Rules of the Road"
+5. Click "Create Your Application"
+6. Click "API Keys"
+7. Use `mv .env.example .env` to use [Dotenv](glossary.md#dotenv) to manage your
    secret data and rely on [.gitignore](glossary.md#gitignore) to keep it out of
    your github.
 8. Fill in your API Key and API Secret in `.env`
