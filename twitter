@@ -33,7 +33,7 @@ class Twitter
     case command
     when 'timeline'
       # Passing only first argument makes command more error-tolerant
-      results = timeline(arguments)
+      results = timeline(arguments[0])
     else
       puts '#{command} command not yet supported.'
     end
@@ -59,14 +59,16 @@ class Twitter
                           })
 
 
-    tweets_JSON = JSON.parse(response.body)
-    tweets = parse_tweets(tweets_JSON)
+    tweets_json = JSON.parse(response.body)
+    PP.pp tweets_json
+
+    tweets = parse_tweets(tweets_json)
   end
 
-  def parse_tweets(tweets_JSON)
+  def parse_tweets(tweets_json)
     tweets = []
-    tweets_JSON.each do |tweet_JSON|
-      tweets << tweet_JSON['text']
+    tweets_json.each do |tweet_json|
+      tweets << tweet_json['text']
     end
 
     tweets
@@ -77,17 +79,15 @@ end
 
 command = ARGV.shift
 arguments = ARGV
-# twitter = Twitter.new
-# results = twitter.run_app(command, arguments)
-# print results
+twitter = Twitter.new
+results = twitter.run_app(command, arguments)
+PP.pp results
 
 ### TESTS
 
-twitter = Twitter.new
-tweets = twitter.run_app('timeline','goldenson')
-PP.pp tweets
-puts tweets.include?("See if you can explain this. :) http://t.co/GskFzjQsip"
-)
+# twitter = Twitter.new
+# tweets = twitter.run_app('timeline','goldenson')
+# puts tweets.include?("See if you can explain this. :) http://t.co/GskFzjQsip")
 
 # authorization_header = SimpleOAuth::Header.new("post",
 # "https://api.twitter.com/1.1/direct_messages/new.json",
