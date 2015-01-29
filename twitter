@@ -36,15 +36,31 @@ end
 
 # Contains high-level variables and methods for a Twitter command-line client
 class Twitter
+
+  attr_reader :command, :arguments
+
+  def initialize(command = nil, arguments = nil, next_cursor_str = nil)
+    @command = command
+    @arguments = arguments
+    @next_cursor_str = next_cursor_str
+
+    run_app(command, arguments)
+  end
+
   def run_app(command, arguments)
+    @command = command
+    @arguments = arguments
+
     case command
     when 'timeline'
       # Passing only first argument makes command more error-tolerant
       results = timeline(arguments[0])
     when 'info'
       results = info(arguments[0])
+    when 'followers'
+      results = followers(arguments[0])
     else
-      puts '#{command} command not yet supported.'
+      puts "#{command} not yet a supported command."
     end
 
     results
@@ -57,6 +73,8 @@ class Twitter
     response = query('get', uri, screen_name, auth_header)
 
     tweets_json = JSON.parse(response.body)
+    error_check(tweets_json)
+
     tweets = json_values(tweets_json, "text")
   end
 
@@ -67,6 +85,7 @@ class Twitter
     response = query('get', uri, screen_name, auth_header)
 
     info_json = JSON.parse(response.body)
+    error_check(info_json)
 
     results = {}
     results["name"] = info_json["name"]
@@ -78,6 +97,25 @@ class Twitter
   end
 end
 
+def followers(screen_name)
+  # Send query and get 20 followers
+  # Print ID and name of 20 followers to screen
+  # Ask user if they want 20 more results (y/n)
+  # Send 20 more if yes, quit if no
+  uri = 'https://api.twitter.com/1.1/followers/list.json'
+
+  auth_header = auth_header('get', uri, screen_name)
+  response = query('get', uri, screen_name, auth_header)
+
+  followers_json = JSON.parse(response.body)
+  error_check(followers_json)
+  users_json = followers_json['users']
+  screen_names = json_values(users_json, 'screen_name')
+  @next_cursor_str = followers_json['next_cursor_str']
+
+  screen_names
+end
+
 def json_values(json, key)
   values = []
   json.each do |hash|
@@ -85,6 +123,17 @@ def json_values(json, key)
   end
 
   values
+end
+
+def error_check(json)
+  errors = json["errors"]
+  unless errors.nil?
+    puts "Twitter API reports errors!"
+    errors.each do |error|
+      puts error[message]
+    end
+    quit
+  end
 end
 
 def auth_header(request, uri, screen_name)
@@ -105,13 +154,39 @@ def query(request, uri, screen_name, auth_header)
              )
 end
 
+def print_results(results)
+  puts "command: #{@command}"
+  if @command == 'followers'
+    PP.pp results
+    if want_more_results?
+      puts "got here"
+      twitter.run_app('followers', arguments[0], next_cursor)
+    end
+  else
+    PP.pp results
+  end
+end
+
+def want_more_results?
+  puts "Do you want 20 more results? (y/n):"
+  answer = gets.chomp
+  case answer
+  when 'y'
+    return true
+  when 'n'
+    return false
+  else
+    puts "Yo, I don't understand. Please enter 'y' or 'n'."
+  end
+end
+
 ### MAIN
 
 command = ARGV.shift
 arguments = ARGV
 twitter = Twitter.new
 results = twitter.run_app(command, arguments)
-PP.pp results
+print_results(results)
 
 ### TESTS
 
