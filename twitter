@@ -44,36 +44,50 @@ class Twitter
   def timeline(screen_name)
     uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
-    auth_header = SimpleOAuth::Header.new('get',
-                  uri,
-                  { screen_name: screen_name },
-                  { consumer_key: API_KEY,
-                    consumer_secret: API_SECRET,
-                    token: ACCESS_TOKEN,
-                    token_secret: ACCESS_TOKEN_SECRET })
-
-    response = Excon.send('get',
-                          uri,
-                          { query: { screen_name: screen_name },
-                            headers: { authorization: auth_header.to_s }
-                          })
-
+    auth_header = auth_header('get', uri, screen_name)
+    response = query('get', uri, screen_name, auth_header)
 
     tweets_json = JSON.parse(response.body)
-    PP.pp tweets_json
-
-    tweets = parse_tweets(tweets_json)
+    tweets = json_get(tweets_json, "text")
   end
 
-  def parse_tweets(tweets_json)
-    tweets = []
-    tweets_json.each do |tweet_json|
-      tweets << tweet_json['text']
-    end
+  def info(screen_name)
+    uri = 'https://api.twitter.com/1.1/users/show.json'
 
-    tweets
+    auth_header = auth_header('get', uri, screen_name)
+    response = query('get', uri, screen_name, auth_header)
+
+    
   end
 end
+
+def auth_header(request, uri, screen_name)
+  SimpleOAuth::Header.new(request,
+                          uri,
+                          { screen_name: screen_name },
+                          consumer_key: API_KEY,
+                          consumer_secret: API_SECRET,
+                          token: ACCESS_TOKEN,
+                          token_secret: ACCESS_TOKEN_SECRET)
+end
+
+def query(request, uri, screen_name, auth_header)
+  Excon.send(request,
+             uri,
+             query: { screen_name: screen_name },
+             headers: { authorization: auth_header.to_s }
+             )
+end
+
+def json_get(json, key)
+  results = []
+  json.each do |result|
+    results << result['text']
+  end
+
+  results
+end
+
 
 ### MAIN
 
