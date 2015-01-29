@@ -2,33 +2,107 @@
 # This lets us to run this from the command line as ./twitter instead of `ruby
 # twitter`
 
+require 'json'
+require 'simple_oauth'
+require 'excon'
 require_relative 'lib/twitter_creds'
 require_relative 'lib/twitter'
+require 'pp'
 
 if API_KEY.nil? || API_SECRET.nil?
-  puts "Make sure you configure your Twitter application first. See README.md."
-  puts "Your Twitter API key and API secret need to go in .env"
+  puts 'Make sure you configure your Twitter application first. See README.md.'
+  puts 'Your Twitter API key and API secret need to go in .env'
 end
 
-# ARGV is where ruby stores command line arguments:
-# http://ruby.about.com/od/rubyfeatures/a/argv.htm
-#
+### GOALS
+
+# See any users timeline -- ./twitter timeline zspencer
+# See any users information (Join date, location, etc.) -- ./twitter info jfarmer
+# See any users followers -- ./twitter followers <yourhandle>
+# See who is following any user -- ./twitter following <yourhandle>
+# Send a tweet -- ./twitter tweet I know kung fu
+# Send a DM -- ./twitter message zspencer do you know kung fu?
+# Follow a user -- ./twitter follow jfarmer
+# Unfollow a user -- ./twitter unfollow zspencer
+
+### METHODS
+
+# Contains high-level variables and methods for a Twitter command-line client
+class Twitter
+  def run_app(command, arguments)
+    case command
+    when 'timeline'
+      # Passing only first argument makes command more error-tolerant
+      results = timeline(arguments)
+    else
+      puts '#{command} command not yet supported.'
+    end
+
+    results
+  end
+
+  def timeline(screen_name)
+    uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
+
+    auth_header = SimpleOAuth::Header.new('get',
+                  uri,
+                  { screen_name: screen_name },
+                  { consumer_key: API_KEY,
+                    consumer_secret: API_SECRET,
+                    token: ACCESS_TOKEN,
+                    token_secret: ACCESS_TOKEN_SECRET })
+
+    response = Excon.send('get',
+                          uri,
+                          { query: { screen_name: screen_name },
+                            headers: { authorization: auth_header.to_s }
+                          })
+
+
+    tweets_JSON = JSON.parse(response.body)
+    tweets = parse_tweets(tweets_JSON)
+  end
+
+  def parse_tweets(tweets_JSON)
+    tweets = []
+    tweets_JSON.each do |tweet_JSON|
+      tweets << tweet_JSON['text']
+    end
+
+    tweets
+  end
+end
+
+### MAIN
+
 command = ARGV.shift
-# The first value in the ARGV array is the command the user typed (i.e. ./twitter timeline)
-#
-# Array#shift returns the first value from an array and removes it from the
-# array: http://www.ruby-doc.org/core-2.1.2/Array.html#method-i-shift
-
 arguments = ARGV
-# After calling ARGV.shfit, ARGV contains the rest of the arguments we passed
-# in via the command line. Unfortunately, on the command line, arguments are
-# separated by spaces.  So, e.g.,
-#
-#   ./twitter tweet Hello everybody
-#
-# will result in the arguments array being ["Hello", "everybody"] after we
-# use Array#shift to remove the first argument, i.e., "tweet".
+# twitter = Twitter.new
+# results = twitter.run_app(command, arguments)
+# print results
 
-results = run_app(command, arguments)
+### TESTS
 
-# It's up to you to present the results of each command.
+twitter = Twitter.new
+tweets = twitter.run_app('timeline','goldenson')
+PP.pp tweets
+puts tweets.include?("See if you can explain this. :) http://t.co/GskFzjQsip"
+)
+
+# authorization_header = SimpleOAuth::Header.new("post",
+# "https://api.twitter.com/1.1/direct_messages/new.json",
+# { :screen_name => "goldenson",
+#   :text => "I can send myself DMs in Ruby!" },
+#   { :consumer_key => API_KEY,
+#     :consumer_secret => API_SECRET,
+#     :token => ACCESS_TOKEN,
+#     :token_secret => ACCESS_TOKEN_SECRET })
+#
+#     response = Excon.send("post", "https://api.twitter.com/1.1/direct_messages/new.json", {
+#       :query => { :screen_name => "goldenson",
+#         :text => "I can send myself DMs in Ruby!" },
+#         :headers => { "Authorization" => authorization_header.to_s }
+#         })
+#
+#         puts response.body
+#         puts response.status
