@@ -25,6 +25,13 @@ end
 # Follow a user -- ./twitter follow jfarmer
 # Unfollow a user -- ./twitter unfollow zspencer
 
+### QUESTIONS
+
+# Any improvements on how I abstracted the authorization headers and query?
+# Any improvements on method or variable names?
+# Should I try to create one JSON method that's always used to parse the API response?
+# Should results for each command be standarized to a common format? If so, what should it be?
+
 ### METHODS
 
 # Contains high-level variables and methods for a Twitter command-line client
@@ -34,6 +41,8 @@ class Twitter
     when 'timeline'
       # Passing only first argument makes command more error-tolerant
       results = timeline(arguments[0])
+    when 'info'
+      results = info(arguments[0])
     else
       puts '#{command} command not yet supported.'
     end
@@ -48,7 +57,7 @@ class Twitter
     response = query('get', uri, screen_name, auth_header)
 
     tweets_json = JSON.parse(response.body)
-    tweets = json_get(tweets_json, "text")
+    tweets = json_values(tweets_json, "text")
   end
 
   def info(screen_name)
@@ -57,8 +66,25 @@ class Twitter
     auth_header = auth_header('get', uri, screen_name)
     response = query('get', uri, screen_name, auth_header)
 
-    
+    info_json = JSON.parse(response.body)
+
+    results = {}
+    results["name"] = info_json["name"]
+    results["joined"] = info_json["created_at"]
+    results["location"] = info_json["location"]
+    results["description"] = info_json["description"]
+
+    results
   end
+end
+
+def json_values(json, key)
+  values = []
+  json.each do |hash|
+    values << hash[key]
+  end
+
+  values
 end
 
 def auth_header(request, uri, screen_name)
@@ -78,16 +104,6 @@ def query(request, uri, screen_name, auth_header)
              headers: { authorization: auth_header.to_s }
              )
 end
-
-def json_get(json, key)
-  results = []
-  json.each do |result|
-    results << result['text']
-  end
-
-  results
-end
-
 
 ### MAIN
 
