@@ -57,6 +57,9 @@ class Twitter
       results = followers(arguments[0], next_cursor_str)
     when 'following'
       results = following(arguments[0], next_cursor_str)
+    when 'tweet'
+      tweet = arguments.join(" ")
+      results = tweet(tweet)
     else
       puts "#{command} not yet a supported command."
     end
@@ -111,6 +114,16 @@ class Twitter
     { results: screen_names, next_cursor_str: next_cursor_str }
   end
 
+  def tweet(tweet)
+    uri = 'https://api.twitter.com/1.1/statuses/update.json'
+    options = { status: tweet }
+
+    tweet_json = send_request_and_get_json('post', uri, options)
+    posted_tweet = tweet_json['text']
+
+    { results: posted_tweet }
+  end
+
   def send_request_and_get_json(request_type, uri, options)
     auth_header = auth_header(request_type, uri, options)
     response = query(request_type, uri, auth_header, options)
@@ -148,7 +161,6 @@ class Twitter
   end
 
   def error_check(json)
-    # PP.pp json
     errors = json[:errors]
     return true if errors.nil?
 
