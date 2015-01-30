@@ -38,16 +38,8 @@ end
 class Twitter
   attr_reader :command, :arguments
 
-  def initialize
-    @command = nil
-    @arguments = nil
-  end
-
   def run_app(command, arguments, next_cursor_str = '-1')
-    @command = command
-    @arguments = arguments
-
-    case @command
+    case command
     when 'timeline'
       # Passing only first argument makes command more error-tolerant
       results = timeline(arguments[0])
@@ -60,6 +52,10 @@ class Twitter
     when 'tweet'
       tweet = arguments.join(" ")
       results = tweet(tweet)
+    when 'message'
+      recipient = arguments.shift
+      message = arguments.join(" ")
+      results = dm(recipient, message)
     else
       puts "#{command} not yet a supported command."
     end
@@ -122,6 +118,16 @@ class Twitter
     posted_tweet = tweet_json['text']
 
     { results: posted_tweet }
+  end
+
+  def dm(screen_name, message)
+    uri = 'https://api.twitter.com/1.1/direct_messages/new.json'
+    options = { screen_name: screen_name, text: message }
+
+    dm_json = send_request_and_get_json('post', uri, options)
+    sent_dm = dm_json['text']
+
+    { results: sent_dm }
   end
 
   def send_request_and_get_json(request_type, uri, options)
