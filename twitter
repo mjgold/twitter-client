@@ -56,6 +56,8 @@ class Twitter
       recipient = arguments.shift
       message = arguments.join(" ")
       results = dm(recipient, message)
+    when 'follow'
+      results = follow(arguments[0])
     else
       puts "#{command} not yet a supported command."
     end
@@ -90,16 +92,16 @@ class Twitter
   def followers(screen_name, next_cursor_str)
     uri = 'https://api.twitter.com/1.1/followers/list.json'
 
-    follow_request(uri, screen_name, next_cursor_str)
+    followers_or_following_request(uri, screen_name, next_cursor_str)
   end
 
   def following(screen_name, next_cursor_str)
     uri = 'https://api.twitter.com/1.1/friends/list.json'
 
-    follow_request(uri, screen_name, next_cursor_str)
+    followers_or_following_request(uri, screen_name, next_cursor_str)
   end
 
-  def follow_request(uri, screen_name, next_cursor_str)
+  def followers_or_following_request(uri, screen_name, next_cursor_str)
     options = { screen_name: screen_name, cursor: next_cursor_str }
     follow_json = send_request_and_get_json('get', uri, options)
 
@@ -128,6 +130,32 @@ class Twitter
     sent_dm = dm_json['text']
 
     { results: sent_dm }
+  end
+
+  def follow(screen_name)
+    uri = 'https://api.twitter.com/1.1/friendships/create.json'
+    options = { screen_name: screen_name }
+
+    follow_json = send_request_and_get_json('post', uri, options)
+    result = follow_json['following'].to_s
+    if result == "true"
+      result = "Following #{screen_name}."
+    end
+
+    { results: result }
+  end
+
+  def unfollow(screen_name)
+    uri = 'https://api.twitter.com/1.1/friendships/destroy.json'
+    options = { screen_name: screen_name }
+
+    unfollow_json = send_request_and_get_json('post', uri, options)
+    result = unfollow_json['following'].to_s
+    if result == "false"
+      result = "Unfollowing #{screen_name}."
+    end
+
+    { results: result }
   end
 
   def send_request_and_get_json(request_type, uri, options)
