@@ -1,0 +1,77 @@
+{:query=>{:count=>10, :screen_name=>"goldenson"},
+ :headers=>
+  {:authorization=>
+    "OAuth oauth_consumer_key=\"uVNvW3voILt8yNC8hJXqhRt0k\", oauth_nonce=\"68565af91d75f436780ef3da9da0dc2c\", oauth_signature=\"PpXyjlQ4yc1%2FPd19TJ4atGKLg24%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1422586171\", oauth_token=\"22961230-9QLhWGfllUb3IIBKaDeiUijy1iPPsazNu0j727jkd\", oauth_version=\"1.0\""},
+ :debug=>true}
+[excon][WARNING] Invalid Excon connection keys: :debug
+/Users/mark/.rvm/gems/ruby-2.1.2/gems/excon-0.43.0/lib/excon/connection.rb:356:in `validate_params'
+/Users/mark/.rvm/gems/ruby-2.1.2/gems/excon-0.43.0/lib/excon/connection.rb:57:in `initialize'
+/Users/mark/.rvm/gems/ruby-2.1.2/gems/excon-0.43.0/lib/excon.rb:123:in `new'
+/Users/mark/.rvm/gems/ruby-2.1.2/gems/excon-0.43.0/lib/excon.rb:123:in `new'
+/Users/mark/.rvm/gems/ruby-2.1.2/gems/excon-0.43.0/lib/excon.rb:226:in `get'
+./twitter:172:in `query'
+./twitter:102:in `followers'
+./twitter:58:in `run_app'
+./twitter:200:in `<main>'
+excon.request
+  :chunk_size          => 1048576
+  :ciphers             => "HIGH:!SSLv2:!aNULL:!eNULL:!3DES"
+  :connect_timeout     => 60
+  :debug               => true
+  :debug_request       => true
+  :debug_response      => true
+  :headers             => {
+    "Host"         => "api.twitter.com:443"
+    :authorization => "OAuth oauth_consumer_key=\"uVNvW3voILt8yNC8hJXqhRt0k\", oauth_nonce=\"68565af91d75f436780ef3da9da0dc2c\", oauth_signature=\"PpXyjlQ4yc1%2FPd19TJ4atGKLg24%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1422586171\", oauth_token=\"22961230-9QLhWGfllUb3IIBKaDeiUijy1iPPsazNu0j727jkd\", oauth_version=\"1.0\""
+  }
+  :host                => "api.twitter.com"
+  :idempotent          => false
+  :instrumentor        => Excon::StandardInstrumentor
+  :instrumentor_name   => "excon"
+  :method              => :get
+  :middlewares         => [
+    Excon::Middleware::ResponseParser
+    Excon::Middleware::Expects
+    Excon::Middleware::Idempotent
+    Excon::Middleware::Instrumentor
+    Excon::Middleware::Mock
+  ]
+  :mock                => false
+  :nonblock            => true
+  :omit_default_port   => false
+  :path                => "/1.1/followers/list.json"
+  :persistent          => false
+  :port                => 443
+  :query               => {
+    :count       => 10
+    :screen_name => "goldenson"
+  }
+  :read_timeout        => 60
+  :retries_remaining   => 4
+  :retry_limit         => 4
+  :scheme              => "https"
+  :ssl_verify_peer     => true
+  :tcp_nodelay         => false
+  :thread_safe_sockets => true
+  :uri_parser          => URI
+  :versions            => "excon/0.43.0 (x86_64-darwin13.0) ruby/2.1.2"
+  :write_timeout       => 60
+excon.response
+  :body          => "{\"errors\":[{\"message\":\"Could not authenticate you\",\"code\":32}]}"
+  :headers       => {
+    "content-length"            => "63"
+    "content-type"              => "application/json;charset=utf-8"
+    "date"                      => "Fri, 30 Jan 2015 02:49:30 UTC"
+    "server"                    => "tsa_a"
+    "set-cookie"                => "guest_id=v1%3A142258617057402034; Domain=.twitter.com; Path=/; Expires=Sun, 29-Jan-2017 02:49:30 UTC"
+    "strict-transport-security" => "max-age=631138519"
+    "x-connection-hash"         => "caf0ca8971558840f85a614b0f61bfef"
+    "x-response-time"           => "5"
+  }
+  :local_address => "10.35.38.229"
+  :local_port    => 52064
+  :reason_phrase => "Authorization Required"
+  :remote_ip     => "199.59.150.9"
+  :status        => 401
+Twitter API reports errors!
+Could not authenticate you

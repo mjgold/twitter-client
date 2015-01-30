@@ -14,10 +14,10 @@ if API_KEY.nil? || API_SECRET.nil?
   puts 'Your Twitter API key and API secret need to go in .env'
 end
 
-### GOALS
+### COMMANDS
 
 # See any users timeline -- ./twitter timeline zspencer
-# See any users information (Join date, location, etc.) -- ./twitter info jfarmer
+# See any users information -- ./twitter info jfarmer
 # See any users followers -- ./twitter followers <yourhandle>
 # See who is following any user -- ./twitter following <yourhandle>
 # Send a tweet -- ./twitter tweet I know kung fu
@@ -36,15 +36,14 @@ end
 
 # Contains high-level variables and methods for a Twitter command-line client
 class Twitter
-  attr_reader :command, :arguments, :next_cursor_str
+  attr_reader :command, :arguments
 
-  def initialize()
+  def initialize
     @command = nil
     @arguments = nil
-    @next_cursor_str = "-1"
   end
 
-  def run_app(command, arguments)
+  def run_app(command, arguments, next_cursor_str = '-1')
     @command = command
     @arguments = arguments
 
@@ -55,9 +54,9 @@ class Twitter
     when 'info'
       results = info(arguments[0])
     when 'followers'
-      results = followers(arguments[0])
+      results = followers(arguments[0], next_cursor_str)
     when 'following'
-      results = following(arguments[0])
+      results = following(arguments[0], next_cursor_str)
     else
       puts "#{command} not yet a supported command."
     end
@@ -68,61 +67,75 @@ class Twitter
   def timeline(screen_name)
     uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
-    auth_header = auth_header('get', uri, screen_name)
-    response = query('get', uri, screen_name, auth_header)
+    options = { screen_name: screen_name }
+    tweets_json = send_request_and_get_json('get', uri, options)
 
-    tweets_json = JSON.parse(response.body)
-    error_check(tweets_json)
-
-    tweets = json_values(tweets_json, "text")
+    { results: json_values(tweets_json, 'text') }
   end
 
   def info(screen_name)
     uri = 'https://api.twitter.com/1.1/users/show.json'
 
-    auth_header = auth_header('get', uri, screen_name)
-    response = query('get', uri, screen_name, auth_header)
-
-    info_json = JSON.parse(response.body)
-    error_check(info_json)
+    options = { screen_name: screen_name }
+    info_json = send_request_and_get_json('get', uri, options)
 
     results = {}
-    results["name"] = info_json["name"]
-    results["joined"] = info_json["created_at"]
-    results["location"] = info_json["location"]
-    results["description"] = info_json["description"]
+    results['name'] = info_json['name']
+    results['joined'] = info_json['created_at']
+    results['location'] = info_json['location']
+    results['description'] = info_json['description']
 
-    results
+    { results: results }
   end
 
-  def followers(screen_name)
+  def followers(screen_name, next_cursor_str)
     uri = 'https://api.twitter.com/1.1/followers/list.json'
 
-    auth_header = auth_header('get', uri, screen_name)
-    response = query('get', uri, screen_name, auth_header)
-
-    followers_json = JSON.parse(response.body)
-    error_check(followers_json)
-    users_json = followers_json['users']
-    screen_names = json_values(users_json, 'screen_name')
-    @next_cursor_str = followers_json['next_cursor_str']
-
-    screen_names
+    follow_request(uri, screen_name, next_cursor_str)
   end
 
-  def following(screen_name)
+  def following(screen_name, next_cursor_str)
     uri = 'https://api.twitter.com/1.1/friends/list.json'
 
-    auth_header = auth_header('get', uri, screen_name)
-    response = query('get', uri, screen_name, auth_header)
+    follow_request(uri, screen_name, next_cursor_str)
+  end
 
-    following_json = JSON.parse(response.body)
-    error_check(following_json)
-    users_json = following_json['users']
+  def follow_request(uri, screen_name, next_cursor_str)
+    options = { screen_name: screen_name, cursor: next_cursor_str }
+    follow_json = send_request_and_get_json('get', uri, options)
+
+    users_json = follow_json['users']
     screen_names = json_values(users_json, 'screen_name')
-    @next_cursor_str = following_json['next_cursor_str']
+    next_cursor_str = follow_json['next_cursor_str']
 
-    screen_names
+    { results: screen_names, next_cursor_str: next_cursor_str }
+  end
+
+  def send_request_and_get_json(request_type, uri, options)
+    auth_header = auth_header(request_type, uri, options)
+    response = query(request_type, uri, auth_header, options)
+    json = JSON.parse(response.body)
+    error_check(json) ### Why doesn't this work for timeline command?
+
+    json
+  end
+
+  def auth_header(request, uri, options)
+    SimpleOAuth::Header.new(request,
+                            uri,
+                            options,
+                            consumer_key: API_KEY,
+                            consumer_secret: API_SECRET,
+                            token: ACCESS_TOKEN,
+                            token_secret: ACCESS_TOKEN_SECRET)
+  end
+
+  def query(request, uri, auth_header, options)
+    params = { query: options,
+               headers: { Authorization: auth_header.to_s }
+             }
+
+    Excon.send(request, uri, params)
   end
 
   def json_values(json, key)
@@ -135,49 +148,23 @@ class Twitter
   end
 
   def error_check(json)
-    errors = json['errors']
+    # PP.pp json
+    errors = json[:errors]
     return true if errors.nil?
 
     puts 'Twitter API reports errors!'
     errors.each do |error|
-      puts error['message']
+      puts error[:message]
     end
     exit
   end
 
-  def auth_header(request, uri, screen_name)
-    SimpleOAuth::Header.new(request,
-                            uri,
-                            { screen_name: screen_name },
-                            consumer_key: API_KEY,
-                            consumer_secret: API_SECRET,
-                            token: ACCESS_TOKEN,
-                            token_secret: ACCESS_TOKEN_SECRET)
-  end
-
-  def query(request, uri, screen_name, auth_header)
-    # puts @next_cursor_str
-    # uri = "https://api.twitter.com/1.1/followers/list.json?screen_name=#{screen_name}"
-    # puts "request: #{request}, uri: #{uri}"
-
-    # options = { headers: { authorization: auth_header.to_s } }
-
-    options = { query: { screen_name: screen_name },
-                headers: { authorization: auth_header.to_s },
-                debug: true
-              }
-
-    PP.pp options
-
-    Excon.send(request, uri, options)
-  end
-
   def print_results(results)
-    PP.pp results
+    PP.pp results[:results]
   end
 
   def want_more_results?
-    puts "Do you want 20 more results? (y/n):"
+    print 'Do you want 20 more results? (y/n): '
     answer = $stdin.gets.chomp # Using $stdin, else normal gets takes ARGV args
     case answer
     when 'y'
@@ -200,9 +187,10 @@ twitter = Twitter.new
 results = twitter.run_app(command, arguments)
 twitter.print_results(results)
 
-if command == 'followers'
+if command == 'followers' || command == 'following'
   while twitter.want_more_results?
-    results = twitter.run_app(command, arguments)
+    next_cursor_str = results[:next_cursor_str]
+    results = twitter.run_app(command, arguments, next_cursor_str)
     twitter.print_results(results)
   end
 end
@@ -212,21 +200,3 @@ end
 # twitter = Twitter.new
 # tweets = twitter.run_app('timeline','goldenson')
 # puts tweets.include?("See if you can explain this. :) http://t.co/GskFzjQsip")
-
-# authorization_header = SimpleOAuth::Header.new("post",
-# "https://api.twitter.com/1.1/direct_messages/new.json",
-# { :screen_name => "goldenson",
-#   :text => "I can send myself DMs in Ruby!" },
-#   { :consumer_key => API_KEY,
-#     :consumer_secret => API_SECRET,
-#     :token => ACCESS_TOKEN,
-#     :token_secret => ACCESS_TOKEN_SECRET })
-#
-#     response = Excon.send("post", "https://api.twitter.com/1.1/direct_messages/new.json", {
-#       :query => { :screen_name => "goldenson",
-#         :text => "I can send myself DMs in Ruby!" },
-#         :headers => { "Authorization" => authorization_header.to_s }
-#         })
-#
-#         puts response.body
-#         puts response.status
