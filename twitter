@@ -58,6 +58,8 @@ class Twitter
       results = dm(recipient, message)
     when 'follow'
       results = follow(arguments[0])
+    when 'unfollow'
+      results = unfollow(arguments[0])
     else
       puts "#{command} not yet a supported command."
     end
@@ -137,8 +139,8 @@ class Twitter
     options = { screen_name: screen_name }
 
     follow_json = send_request_and_get_json('post', uri, options)
-    result = follow_json['following'].to_s
-    if result == "true"
+    result = follow_json['screen_name']
+    if result == "#{screen_name}"
       result = "Following #{screen_name}."
     end
 
@@ -150,8 +152,8 @@ class Twitter
     options = { screen_name: screen_name }
 
     unfollow_json = send_request_and_get_json('post', uri, options)
-    result = unfollow_json['following'].to_s
-    if result == "false"
+    result = unfollow_json['screen_name']
+    if result == "#{screen_name}"
       result = "Unfollowing #{screen_name}."
     end
 
