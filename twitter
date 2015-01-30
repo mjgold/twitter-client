@@ -27,17 +27,10 @@ end
 
 ### QUESTIONS
 
-# Any improvements on how I abstracted the authorization headers and query?
-# Any improvements on method or variable names?
-# Should I try to create one JSON method that's always used to parse the API response?
-# Should results for each command be standarized to a common format? If so, what should it be?
-
 ### METHODS
 
-# Contains high-level variables and methods for a Twitter command-line client
+# Implements a Twitter command-line client
 class Twitter
-  attr_reader :command, :arguments
-
   def run_app(command, arguments, next_cursor_str = '-1')
     case command
     when 'timeline'
@@ -50,11 +43,11 @@ class Twitter
     when 'following'
       results = following(arguments[0], next_cursor_str)
     when 'tweet'
-      tweet = arguments.join(" ")
+      tweet = arguments.join(' ')
       results = tweet(tweet)
     when 'message'
       recipient = arguments.shift
-      message = arguments.join(" ")
+      message = arguments.join(' ')
       results = dm(recipient, message)
     when 'follow'
       results = follow(arguments[0])
@@ -67,6 +60,7 @@ class Twitter
     results
   end
 
+  ### Erroring at error_check(json) since strangely passing an array instead of hash
   def timeline(screen_name)
     uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
@@ -164,7 +158,7 @@ class Twitter
     auth_header = auth_header(request_type, uri, options)
     response = query(request_type, uri, auth_header, options)
     json = JSON.parse(response.body)
-    error_check(json) ### Why doesn't this work for timeline command?
+    error_check(json)
 
     json
   end
@@ -211,6 +205,15 @@ class Twitter
     PP.pp results[:results]
   end
 
+  def check_for_more_results(command, arguments, results)
+    return unless command == 'followers' || command == 'following'
+    while want_more_results?
+      next_cursor_str = results[:next_cursor_str]
+      results = run_app(command, arguments, next_cursor_str)
+      print_results(results)
+    end
+  end
+
   def want_more_results?
     print 'Do you want 20 more results? (y/n): '
     answer = $stdin.gets.chomp # Using $stdin, else normal gets takes ARGV args
@@ -234,14 +237,7 @@ twitter = Twitter.new
 
 results = twitter.run_app(command, arguments)
 twitter.print_results(results)
-
-if command == 'followers' || command == 'following'
-  while twitter.want_more_results?
-    next_cursor_str = results[:next_cursor_str]
-    results = twitter.run_app(command, arguments, next_cursor_str)
-    twitter.print_results(results)
-  end
-end
+twitter.check_for_more_results(command, arguments, results)
 
 ### TESTS
 
