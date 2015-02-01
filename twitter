@@ -14,6 +14,8 @@ if API_KEY.nil? || API_SECRET.nil?
   puts 'Your Twitter API key and API secret need to go in .env'
 end
 
+API_URL = 'https://api.twitter.com/1.1/'
+
 ### COMMANDS
 
 # See any users timeline -- ./twitter timeline zspencer
@@ -32,6 +34,8 @@ end
 # Implements a Twitter command-line client
 class Twitter
   def run_app(command, arguments, next_cursor_str = '-1')
+    ui = TwitterUI.new
+
     case command
     when 'timeline'
       # Passing only first argument makes command more error-tolerant
@@ -39,9 +43,19 @@ class Twitter
     when 'info'
       results = info(arguments[0])
     when 'followers'
-      results = followers(arguments[0], next_cursor_str)
+      loop do
+        results = followers(arguments[0], next_cursor_str)
+        ui.print_results(results)
+        return results unless ui.want_more_results?
+        next_cursor_str = results[:next_cursor_str]
+      end
     when 'following'
-      results = following(arguments[0], next_cursor_str)
+      loop do
+        results = following(arguments[0], next_cursor_str)
+        ui.print_results(results)
+        return results unless ui.want_more_results?
+        next_cursor_str = results[:next_cursor_str]
+      end
     when 'tweet'
       tweet = arguments.join(' ')
       results = tweet(tweet)
@@ -57,21 +71,22 @@ class Twitter
       puts "#{command} not yet a supported command."
     end
 
+    ui.print_results(results)
     results
   end
 
   ### Erroring at error_check(json) since strangely passing an array instead of hash
   def timeline(screen_name)
-    uri = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
+    uri = API_URL + 'statuses/user_timeline.json'
 
     options = { screen_name: screen_name }
     tweets_json = send_request_and_get_json('get', uri, options)
 
-    { results: json_values(tweets_json, 'text') }
+    { results: ues(tweets_json, 'text') }
   end
 
   def info(screen_name)
-    uri = 'https://api.twitter.com/1.1/users/show.json'
+    uri = API_URL + 'users/show.json'
 
     options = { screen_name: screen_name }
     info_json = send_request_and_get_json('get', uri, options)
@@ -86,13 +101,13 @@ class Twitter
   end
 
   def followers(screen_name, next_cursor_str)
-    uri = 'https://api.twitter.com/1.1/followers/list.json'
+    uri = API_URL + 'followers/list.json'
 
     followers_or_following_request(uri, screen_name, next_cursor_str)
   end
 
   def following(screen_name, next_cursor_str)
-    uri = 'https://api.twitter.com/1.1/friends/list.json'
+    uri = API_URL + 'friends/list.json'
 
     followers_or_following_request(uri, screen_name, next_cursor_str)
   end
@@ -102,14 +117,14 @@ class Twitter
     follow_json = send_request_and_get_json('get', uri, options)
 
     users_json = follow_json['users']
-    screen_names = json_values(users_json, 'screen_name')
+    screen_names = values_from_json(users_json, 'screen_name')
     next_cursor_str = follow_json['next_cursor_str']
 
     { results: screen_names, next_cursor_str: next_cursor_str }
   end
 
   def tweet(tweet)
-    uri = 'https://api.twitter.com/1.1/statuses/update.json'
+    uri = API_URL + 'statuses/update.json'
     options = { status: tweet }
 
     tweet_json = send_request_and_get_json('post', uri, options)
@@ -119,7 +134,7 @@ class Twitter
   end
 
   def dm(screen_name, message)
-    uri = 'https://api.twitter.com/1.1/direct_messages/new.json'
+    uri = API_URL + 'direct_messages/new.json'
     options = { screen_name: screen_name, text: message }
 
     dm_json = send_request_and_get_json('post', uri, options)
@@ -129,27 +144,31 @@ class Twitter
   end
 
   def follow(screen_name)
-    uri = 'https://api.twitter.com/1.1/friendships/create.json'
+    uri = API_URL + 'friendships/create.json'
     options = { screen_name: screen_name }
 
     follow_json = send_request_and_get_json('post', uri, options)
-    result = follow_json['screen_name']
-    if result == "#{screen_name}"
-      result = "Following #{screen_name}."
-    end
+    result = follow_json['following']
+
+    PP.pp follow_json
+
+    # Move this to Twitter UI
+    # NOT WORKING, TWITTER RETURNS FALSE AT FIRST FOLLOW
+    result = "Following #{screen_name}." if result == 'true'
 
     { results: result }
   end
 
   def unfollow(screen_name)
-    uri = 'https://api.twitter.com/1.1/friendships/destroy.json'
+    uri = API_URL + 'friendships/destroy.json'
     options = { screen_name: screen_name }
 
     unfollow_json = send_request_and_get_json('post', uri, options)
-    result = unfollow_json['screen_name']
-    if result == "#{screen_name}"
-      result = "Unfollowing #{screen_name}."
-    end
+    result = unfollow_json['following']
+
+    # Move this to Twitter UI
+    # NOT WORKING, TWITTER RETURNS TRUE AT THE FIRST UNFOLLOW
+    result = "Following #{screen_name}." if result == 'false'
 
     { results: result }
   end
@@ -158,7 +177,7 @@ class Twitter
     auth_header = auth_header(request_type, uri, options)
     response = query(request_type, uri, auth_header, options)
     json = JSON.parse(response.body)
-    error_check(json)
+    # no_errors?(json)
 
     json
   end
@@ -181,16 +200,14 @@ class Twitter
     Excon.send(request, uri, params)
   end
 
-  def json_values(json, key)
+  def values_from_json(json, key)
     values = []
-    json.each do |hash|
-      values << hash[key]
-    end
-
+    json.map { |hash| values << hash[key] }
     values
   end
 
-  def error_check(json)
+  def no_errors?(json)
+    # PP.pp json
     errors = json[:errors]
     return true if errors.nil?
 
@@ -200,18 +217,12 @@ class Twitter
     end
     exit
   end
+end
 
+# Gets and displays Twitter information to user
+class TwitterUI
   def print_results(results)
     PP.pp results[:results]
-  end
-
-  def check_for_more_results(command, arguments, results)
-    return unless command == 'followers' || command == 'following'
-    while want_more_results?
-      next_cursor_str = results[:next_cursor_str]
-      results = run_app(command, arguments, next_cursor_str)
-      print_results(results)
-    end
   end
 
   def want_more_results?
@@ -234,10 +245,7 @@ end
 command = ARGV.shift
 arguments = ARGV
 twitter = Twitter.new
-
-results = twitter.run_app(command, arguments)
-twitter.print_results(results)
-twitter.check_for_more_results(command, arguments, results)
+twitter.run_app(command, arguments)
 
 ### TESTS
 
