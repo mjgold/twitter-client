@@ -62,7 +62,7 @@ module TwitterClient
         puts "#{command} not yet a supported command."
       end
 
-      ui.print_results(results, command)
+      # ui.print_results(results, command)
       results
     end
 
