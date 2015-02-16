@@ -1,10 +1,12 @@
 require 'dotenv'
 Dotenv.load(".env")
 
+# puts ENV.keys
+
 unless ENV.keys.include?("API_KEY") && ENV.keys.include?("API_SECRET")
   $stderr.puts """
   Woops! It looks like you haven't placed your twitter credentials in `.env`
-
+  This is in twitter_client/twitter_creds.rb
   Make sure you followed all the steps for registering your application:
   https://github.com/codeunion/twitter-client/blob/master/docs/twitter.md#registering-your-application"""
 end
