@@ -1,5 +1,6 @@
 .DS_Store
 .env
+twitter_lib.rb
 
 *.gem
 *.rbc

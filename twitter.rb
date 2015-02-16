@@ -5,16 +5,16 @@
 require 'json'
 require 'simple_oauth'
 require 'excon'
-require_relative 'lib/twitter_creds'
+# require_relative 'lib/twitter_creds'
 require_relative 'lib/twitter'
 require 'pp'
 
-if API_KEY.nil? || API_SECRET.nil?
-  puts 'Make sure you configure your Twitter application first. See README.md.'
-  puts 'Your Twitter API key and API secret need to go in .env'
-end
-
 API_URL = 'https://api.twitter.com/1.1/'
+
+# if api_key.nil? || api_secret.nil?
+#   puts 'Make sure you configure your Twitter application first. See README.md.'
+#   puts 'Your Twitter API key and API secret need to go in .env'
+# end
 
 ### COMMANDS
 
@@ -29,7 +29,11 @@ API_URL = 'https://api.twitter.com/1.1/'
 
 # Implements a Twitter command-line client
 module TwitterClient
-    class Twitter
+  class Twitter
+    def initialize(config = {})
+      @config = config
+    end
+
     def run_app(command, arguments, next_cursor_str = '-1')
       ui = TwitterUI.new
 
@@ -163,10 +167,11 @@ module TwitterClient
       SimpleOAuth::Header.new(request,
                               uri,
                               options,
-                              consumer_key: API_KEY,
-                              consumer_secret: API_SECRET,
-                              token: ACCESS_TOKEN,
-                              token_secret: ACCESS_TOKEN_SECRET)
+                              consumer_key: @config[:api_key],
+                              consumer_secret: @config[:api_secret],
+                              token: @config[:access_token],
+                              token_secret: @config[:access_token_secret]
+                              )
     end
 
     def query(request, uri, auth_header, options)
@@ -184,12 +189,12 @@ module TwitterClient
     end
 
     def no_errors?(json)
-      if json.is_a?(Hash) && errors = json[:errors]
+      if json.is_a?(Hash) && errors = json["errors"]
         puts 'Twitter API reports errors!'
         errors.each do |error|
-          puts error[:message]
+          puts error["message"]
         end
-        false
+        fail 'Quitting due to errors!'
       end
       true
     end
@@ -205,46 +210,44 @@ module TwitterClient
         else
           fail ArgumentError, "I don't know the command #{command}."
         end
-
-        results << one_result_set[:results]
-        ui.print_results(results, command)
-        return results unless ui.want_more_results?
-        next_cursor_str = one_result_set[:next_cursor_str]
       end
-      results
+
+      results << one_result_set[:results]
+      ui.print_results(results, command)
+      return results unless ui.want_more_results?
+      next_cursor_str = one_result_set[:next_cursor_str]
+    end
+  end
+
+  # Gets and displays Twitter information to user
+  # FUTURE: flesh out by command
+  class TwitterUI
+    def print_results(results, command)
+      PP.pp results
+    end
+
+    def want_more_results?
+      print 'Do you want 20 more results? (y/n): '
+      answer = $stdin.gets.chomp # Using $stdin, else normal gets takes ARGV args
+      case answer
+      when 'y'
+        return true
+      when 'n'
+        return false
+      else
+        puts "Yo, I don't understand. Please enter 'y' or 'n'."
+        want_more_results?
+      end
     end
   end
 end
-
-# Gets and displays Twitter information to user
-# FUTURE: flesh out by command
-class TwitterUI
-  def print_results(results, command)
-    PP.pp results
-  end
-
-  def want_more_results?
-    print 'Do you want 20 more results? (y/n): '
-    answer = $stdin.gets.chomp # Using $stdin, else normal gets takes ARGV args
-    case answer
-    when 'y'
-      return true
-    when 'n'
-      return false
-    else
-      puts "Yo, I don't understand. Please enter 'y' or 'n'."
-      want_more_results?
-    end
-  end
-end
-
 
 ### MAIN
 
-command = ARGV.shift
-arguments = ARGV
-twitter = TwitterClient::Twitter.new
-twitter.run_app(command, arguments)
+# command = ARGV.shift
+# arguments = ARGV
+# twitter = TwitterClient::Twitter.new
+# twitter.run_app(command, arguments)
 
 ### TESTS
 
