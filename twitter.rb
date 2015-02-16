@@ -37,17 +37,16 @@ module TwitterClient
     def run_app(command, arguments, next_cursor_str = '-1')
       ui = TwitterUI.new
 
-      puts command
-      puts arguments
       case command
       when 'timeline'
-        results = timeline(arguments)
+        # Passing only first argument makes command more error-tolerant
+        results = timeline(arguments[0])
       when 'info'
-        results = info(arguments)
+        results = info(arguments[0])
       when 'followers'
-        results = follow_command("followers", arguments, next_cursor_str, ui)
+        results = follow_command("followers", arguments[0], next_cursor_str, ui)
       when 'following'
-        results = follow_command("following", arguments, next_cursor_str, ui)
+        results = follow_command("following", arguments[0], next_cursor_str, ui)
       when 'tweet'
         tweet = arguments.join(' ')
         results = tweet(tweet)
@@ -56,9 +55,9 @@ module TwitterClient
         message = arguments.join(' ')
         results = dm(recipient, message)
       when 'follow'
-        results = follow(arguments)
+        results = follow(arguments[0])
       when 'unfollow'
-        results = unfollow(arguments)
+        results = unfollow(arguments[0])
       else
         puts "#{command} not yet a supported command."
       end
@@ -173,7 +172,6 @@ module TwitterClient
                               token: @config[:access_token],
                               token_secret: @config[:access_token_secret]
                               )
-                              puts @config
     end
 
     def query(request, uri, auth_header, options)
